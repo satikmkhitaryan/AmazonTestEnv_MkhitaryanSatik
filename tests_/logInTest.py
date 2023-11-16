@@ -5,10 +5,11 @@ from testData_ import testData
 from selenium.webdriver.support.events import EventFiringWebDriver
 from common_.utilities_.customListener import MyListener
 from pages_.loginPage import LogInPage
+from common_.utilities_.customLogger import *
 
 
-
-class AA_01(unittest.TestCase):
+# Description: Create test for Sign in functionality in Amazon.com
+class login_test(unittest.TestCase):
     def setUp(self):
         self.simpleDriver = webdriver.Chrome()
         self.driver = EventFiringWebDriver(self.simpleDriver, MyListener())
@@ -20,24 +21,27 @@ class AA_01(unittest.TestCase):
     def test_positive_login(self):
         logInPageObj = LogInPage(self.driver)
         logInPageObj.fill_username_field(testData.loginDataValid["username"])
-        logInPageObj.validate_continue_button_text()
         logInPageObj.click_to_continue_button()
         logInPageObj.fill_password_field(testData.loginDataValid["password"])
-        # Here we put sleep so as not to be perceived as a robot
-        sleep(10)
+        sleep(6)  # Here we put sleep so as not to be perceived as a robot
         logInPageObj.click_to_sign_in_button()
-        sleep(5)
+        sleep(10)
+        self.assertEqual("Amazon.com. Spend less. Smile more.", self.driver.title, "You are signed in successfully ")
 
-    def test_negative_login(self):
+    def test_negative_login_with_invalid_password(self):
         logInPageObj = LogInPage(self.driver)
         logInPageObj.fill_username_field(testData.loginDataWithInvalidPassword["username"])
-        logInPageObj.validate_continue_button_text()
         logInPageObj.click_to_continue_button()
         logInPageObj.fill_password_field(testData.loginDataWithInvalidPassword["password"])
-        # Here we put sleep so as not to be perceived as a robot
-        sleep(10)
+        sleep(10)  # Here we put sleep so as not to be perceived as a robot
         logInPageObj.click_to_sign_in_button()
+        self.assertTrue(logInPageObj.validate_wrong_password_message(), "There was a problem. Your password is incorrect")
 
+    def test_negative_login_with_invalid_logipn(self):
+        logInPageObj = LogInPage(self.driver)
+        logInPageObj.fill_username_field(testData.loginDataWithInvalidUsername["username"])
+        logInPageObj.click_to_continue_button()
+        self.assertTrue(logInPageObj.validate_wrong_username_message(), "There was a problem. Your email address/mobile number is incorrect")
 
     def tearDown(self):
         self.driver.close()

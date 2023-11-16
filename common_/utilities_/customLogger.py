@@ -4,12 +4,11 @@ import os
 from pathlib import Path
 
 
-
 def get_root_dir_name():
     command = "Path(__file__).absolute()"
     while True:
         rootDir = str(eval(command))
-        if rootDir.split(sep="\\")[-1] == "AmazonTestEnv_MS":
+        if rootDir.split(sep="\\")[-1] == "AmazonTestEnvironment_MkhitaryanSatik":
             return rootDir
         else:
             command += ".parent"
@@ -34,7 +33,3 @@ def logger(level, message, fileName=os.path.join(get_root_dir_name(), '_logs_', 
     elif level == "CRITICAL":
         logging.critical(message)
         print(message)
-
-
-
-
