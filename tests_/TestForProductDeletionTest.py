@@ -20,33 +20,29 @@ class delete_product_from_cart(unittest.TestCase):
         logInPageObj.validate_continue_button_text()
         logInPageObj.click_to_continue_button()
         logInPageObj.fill_password_field(testData.loginDataValid["password"])
-        sleep(10) # Here we put sleep so as not to be perceived as a robot
+        sleep(10)  # Here we put sleep so as not to be perceived as a robot
         logInPageObj.click_to_sign_in_button()
         self.navigationBarObj = NavigationBar(self.driver)
+        self.navigationBarObj.click_to_cart_button()
+        self.cartPageObj = CartPage(self.driver)
 
     def test_validate_emptiness_of_cart(self):
-        productCountInCart = self.navigationBarObj.get_product_count_in_cart()
-        if int(productCountInCart) == 0:
-            logger("WARNING", "Your cart is empty")
-        else:
-            logger("WARNING", "Yor cart isn't empty")
+        self.assertEqual(self.cartPageObj.is_your_Amazon_cart_is_empty_message_appear(), "Your Amazon Cart is empty.",
+                         "ERROR: Your Amazon cart is not empty")
 
     def test_delete_first_product_from_cart(self):
         countOfProductsInCartBeforeProductDeleting = self.navigationBarObj.get_product_count_in_cart()
-        if int(countOfProductsInCartBeforeProductDeleting) == 0:
-            logger("WARNING", "Your Amazon cart is empty. You cannot delete product from cart")
-        else:
-            self.navigationBarObj.click_to_cart_button()
-            cartPageObj = CartPage(self.driver)
-            cartPageObj.delete_first_product_from_cart()
+        self.navigationBarObj.click_to_cart_button()
+        self.cartPageObj.delete_first_product_from_cart()
+        countOfProductsInCartAfterProductDeleting = self.navigationBarObj.get_product_count_in_cart()
+        self.assertEqual(countOfProductsInCartBeforeProductDeleting, countOfProductsInCartAfterProductDeleting + 1, "ERROR: Wrong count of product in cart")
 
     def test_delete_all_products_from_cart(self):
         self.navigationBarObj.click_to_cart_button()
         countOfProductsInCartBeforeAllProductDeleting = self.navigationBarObj.get_product_count_in_cart()
-        cartPageObj = CartPage(self.driver)
-        if int(countOfProductsInCartBeforeAllProductDeleting) != 0:
-            cartPageObj.delete_all_products_from_cart(int(countOfProductsInCartBeforeAllProductDeleting))
+        self.cartPageObj.delete_all_products_from_cart(countOfProductsInCartBeforeAllProductDeleting)
         countOfProductsInCartAfterAllProductDeleting = self.navigationBarObj.get_product_count_in_cart()
-        self.assertEqual(int(countOfProductsInCartAfterAllProductDeleting), 0, "All products successfully removed from cart")
+        self.assertEqual(countOfProductsInCartAfterAllProductDeleting, 0, "All products should be removed but  were not removed")
+
     def tearDown(self):
         self.driver.close()

@@ -33,7 +33,7 @@ class product_addition_test(unittest.TestCase):
         countOfProductsInCartBeforeAddingNewProductToCart = self.navigationBarObj.get_product_count_in_cart()
         productDetailsPageObj.click_to_add_to_cart_button()
         countOfProductsInCartAfterAddingProductToCart = self.navigationBarObj.get_product_count_in_cart()
-        self.assertEqual(int(countOfProductsInCartAfterAddingProductToCart), int(countOfProductsInCartBeforeAddingNewProductToCart)+1, "ERROR: Wrong count of product in cart")
+        self.assertEqual(countOfProductsInCartAfterAddingProductToCart, countOfProductsInCartBeforeAddingNewProductToCart+1, "ERROR: Wrong count of product in cart")
 
     def tearDown(self):
         self.driver.close()
