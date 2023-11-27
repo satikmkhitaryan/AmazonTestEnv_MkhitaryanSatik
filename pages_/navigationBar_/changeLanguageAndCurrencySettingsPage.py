@@ -3,7 +3,7 @@ from pages_.basePage import BasePage
 from common_.utilities_.customLogger import *
 
 
-class ChangeLanguagePage(BasePage):
+class ChangeLanguageAndCurrencySettingsPage(BasePage):
     def __init__(self, driver):
         super().__init__(driver)
         self.__englishButtonLocator = (By.XPATH, "(//*[@class='a-label a-radio-label'])[1]")
@@ -23,7 +23,7 @@ class ChangeLanguagePage(BasePage):
         armenianDramIconElement = self._find_element(self.__armenianDramIconLocator)
         self._click_to_element(armenianDramIconElement)
 
-    def validate_currency_icon_text(self):
+    def get_currency_icon_text(self):
         currencyDropDownButtonElement = self._find_element(self.__currencyDropDownButtonLocator)
         self._get_element_text(currencyDropDownButtonElement)
 

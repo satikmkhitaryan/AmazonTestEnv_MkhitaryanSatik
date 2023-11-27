@@ -10,9 +10,11 @@ class LogInPage(BasePage):
         self.__usernameFieldLocator = (By.ID, "ap_email")
         self.__passwordFieldLocator = (By.ID, "ap_password")
         self.__continueButtonLocator = (By.ID, "continue")
-        self.__signInButtonLocator = (By.ID, "signInSubmit")
+        self.__signInButtonLocator = (By.ID, "auth-signin-button")
         self.__errorMessageYourPasswordIsIncorrectLocator = (By.CLASS_NAME, "a-list-item")
         self.__errorMessageWeCannotFindAnAccountWithThatEmailLocator = (By.CLASS_NAME, "a-list-item")
+        self.__signInTextLocator = (By.CLASS_NAME, "a-spacing-small")
+
     def fill_username_field(self, userName):
         userNameFieldElement = self._find_element(self.__usernameFieldLocator)
         self._fill_field(userNameFieldElement, userName)
@@ -35,18 +37,30 @@ class LogInPage(BasePage):
             logger("ERROR", "Wrong 'continue' button text")
             exit(2)
 
-    def validate_signin_button_text(self):
+    def get_signin_button_text(self):
         signInButtonElement = self._find_element(self.__signInButtonLocator)
-        if self._get_element_text(signInButtonElement) != "Sign in":
-            logger("ERROR", "Wrong 'Sign in' button text")
-            exit(3)
+        signInButtonText = self._get_element_text(signInButtonElement)
+        return signInButtonText
 
-    def validate_wrong_password_message(self):
-        errorMessageYourPasswordIsIncorrectElement = self._get_element_text_by_locator(self.__errorMessageYourPasswordIsIncorrectLocator)
-        logger("WARNING", "Your password is incorrect")
-        return errorMessageYourPasswordIsIncorrectElement == "Your password is incorrect"
+    def is_wrong_password_error_message_appear(self):
+        errorMessageYourPasswordIsIncorrectElement = self._find_element(self.__errorMessageYourPasswordIsIncorrectLocator)
+        errorMessageYourPasswordIsIncorrectText = self._get_element_text(errorMessageYourPasswordIsIncorrectElement)
+        if errorMessageYourPasswordIsIncorrectText == "Your password is incorrect":
+            logger("WARNING", "Your password is incorrect")
+            return True
+        else:
+            return False
 
-    def validate_wrong_username_message(self):
-        errorMessageWeCannotFindAnAccountWithThatEmailElement = self._get_element_text_by_locator(self.__errorMessageWeCannotFindAnAccountWithThatEmailLocator)
-        logger("WARNING", "We cannot find an account with that email address" )
-        return errorMessageWeCannotFindAnAccountWithThatEmailElement == "We cannot find an account with that email address"
+    def is_wrong_username_error_message_appear(self):
+        errorMessageWeCannotFindAnAccountWithThatEmailElement = self._find_element(self.__errorMessageWeCannotFindAnAccountWithThatEmailLocator)
+        errorMessageWeCannotFindAnAccountWithThatEmailText = self._get_element_text(errorMessageWeCannotFindAnAccountWithThatEmailElement)
+        if errorMessageWeCannotFindAnAccountWithThatEmailText == "We cannot find an account with that email address":
+            logger("WARNING", "There was a problem. Your email address/mobile number is incorrect.")
+            return True
+        else:
+            return False
+
+    def is_sign_in_text_appear(self):
+        signInTextElement = self._find_element(self.__signInTextLocator)
+        logger("INFO", "You are Sign out from Amazon.com successfully ")
+        return self._get_element_text(signInTextElement)
